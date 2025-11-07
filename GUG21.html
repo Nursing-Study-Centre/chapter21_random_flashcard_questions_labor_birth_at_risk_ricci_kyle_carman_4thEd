@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 21 Flashcards - 30 Questions</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            height: 95vh;
+            max-height: 95vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path d="M30,30 Q50,10 70,30 T90,50 T70,70 T50,90 T30,70 T10,50 T30,30 Z" fill="white"/></svg>');
+        }
+        
+        .header h1 {
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 8px;
+            position: relative;
+        }
+        
+        .header .subtitle {
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            opacity: 0.9;
+            position: relative;
+        }
+        
+        .progress {
+            background: #34495e;
+            height: 8px;
+            width: 100%;
+            flex-shrink: 0;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .flashcard {
+            padding: clamp(10px, 3vw, 20px);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #f8f9fa;
+            overflow-y: auto;
+        }
+        
+        .question-container {
+            display: flex;
+            gap: clamp(10px, 2vw, 15px);
+            align-items: flex-start;
+            margin-bottom: clamp(10px, 2vw, 15px);
+        }
+        
+        .question-icon {
+            background: #3498db;
+            color: white;
+            width: clamp(35px, 8vw, 50px);
+            height: clamp(35px, 8vw, 50px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            font-weight: bold;
+            flex-shrink: 0;
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+        }
+        
+        .question {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            line-height: 1.6;
+            color: #2c3e50;
+            flex-grow: 1;
+            font-weight: 500;
+        }
+        
+        .image-container {
+            margin: clamp(8px, 2vw, 15px) 0;
+            text-align: center;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            max-height: clamp(120px, 20vh, 180px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ecf0f1;
+        }
+        
+        .concept-image {
+            max-width: 100%;
+            max-height: clamp(110px, 18vh, 160px);
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        
+        .hint-container {
+            margin: clamp(8px, 2vw, 15px) 0;
+            text-align: center;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 1.5vw, 10px);
+            margin-bottom: clamp(10px, 2vw, 20px);
+            flex: 1;
+        }
+        
+        .option {
+            padding: clamp(10px, 2vw, 14px) clamp(12px, 2.5vw, 18px);
+            border: 2px solid #bdc3c7;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            display: flex;
+            align-items: center;
+            gap: clamp(8px, 1.5vw, 10px);
+            font-size: clamp(0.85rem, 2vw, 1rem);
+        }
+        
+        .option:hover {
+            background: #e9ecef;
+            border-color: #95a5a6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .option-letter {
+            background: #ecf0f1;
+            color: #2c3e50;
+            width: clamp(24px, 5vw, 28px);
+            height: clamp(24px, 5vw, 28px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            font-size: clamp(0.75rem, 1.8vw, 0.9rem);
+        }
+        
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        
+        .option.correct .option-letter {
+            background: #28a745;
+            color: white;
+        }
+        
+        .option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        
+        .option.incorrect .option-letter {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .feedback {
+            padding: clamp(12px, 2.5vw, 16px);
+            border-radius: 12px;
+            margin-bottom: clamp(10px, 2vw, 16px);
+            display: none;
+            align-items: center;
+            gap: clamp(8px, 1.5vw, 12px);
+            font-weight: 500;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+        }
+        
+        .feedback.correct {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+            display: flex;
+        }
+        
+        .feedback.incorrect {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+            display: flex;
+        }
+        
+        .feedback-icon {
+            font-size: clamp(1.2rem, 3vw, 1.4rem);
+            flex-shrink: 0;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: clamp(12px, 2.5vw, 16px) clamp(16px, 3vw, 24px);
+            background: #ecf0f1;
+            border-top: 1px solid #bdc3c7;
+            flex-shrink: 0;
+        }
+        
+        .counter {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+        }
+        
+        .btn {
+            padding: clamp(10px, 2vw, 12px) clamp(15px, 2.5vw, 20px);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: clamp(6px, 1vw, 8px);
+            font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+            white-space: nowrap;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(149, 165, 166, 0.3);
+        }
+        
+        .btn-hint {
+            background: linear-gradient(135deg, #ffc107, #ff9800);
+            color: white;
+            padding: clamp(8px, 1.5vw, 10px) clamp(12px, 2vw, 16px);
+            font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+        }
+        
+        .btn-hint:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(255, 193, 7, 0.3);
+        }
+        
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .rationale {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 2px solid #ffd43b;
+            border-radius: 12px;
+            padding: clamp(12px, 2.5vw, 16px);
+            margin-top: clamp(8px, 1.5vw, 12px);
+            display: none;
+        }
+        
+        .rationale.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .rationale h4 {
+            color: #856404;
+            margin-bottom: clamp(6px, 1.2vw, 10px);
+            display: flex;
+            align-items: center;
+            gap: clamp(6px, 1.2vw, 8px);
+            font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+        }
+        
+        .rationale p {
+            color: #856404;
+            line-height: 1.6;
+            font-size: clamp(0.8rem, 1.8vw, 0.95rem);
+        }
+        
+        .hint {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border: 2px dashed #2196f3;
+            border-radius: 12px;
+            padding: clamp(12px, 2.5vw, 16px);
+            margin-top: clamp(6px, 1.2vw, 10px);
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .hint.show {
+            display: block;
+        }
+        
+        .hint h4 {
+            color: #1565c0;
+            margin-bottom: clamp(6px, 1.2vw, 8px);
+            display: flex;
+            align-items: center;
+            gap: clamp(5px, 1vw, 6px);
+            font-size: clamp(0.85rem, 2vw, 1rem);
+        }
+        
+        .hint p {
+            color: #1565c0;
+            line-height: 1.5;
+            font-size: clamp(0.75rem, 1.6vw, 0.9rem);
+            font-style: italic;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .stats {
+            display: flex;
+            gap: clamp(8px, 1.5vw, 15px);
+            justify-content: center;
+            margin-top: clamp(4px, 1vw, 10px);
+            flex-wrap: wrap;
+        }
+        
+        .stat {
+            background: rgba(255,255,255,0.2);
+            padding: clamp(5px, 1vw, 6px) clamp(8px, 1.8vw, 12px);
+            border-radius: 20px;
+            font-size: clamp(0.7rem, 1.6vw, 0.85rem);
+            white-space: nowrap;
+        }
+        
+        /* Cancel selection button */
+        .cancel-selection {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            margin: 0 auto clamp(10px, 2vw, 15px) auto;
+            display: none;
+        }
+        
+        .cancel-selection:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(255, 107, 107, 0.3);
+        }
+        
+        .cancel-selection.show {
+            display: flex;
+        }
+        
+        /* Mobile-specific adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+            
+            .container {
+                height: 100vh;
+                max-height: 100vh;
+                border-radius: 15px;
+            }
+            
+            .question-container {
+                flex-direction: column;
+                text-align: center;
+                gap: 8px;
+            }
+            
+            .question-icon {
+                align-self: center;
+            }
+            
+            .navigation {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            .btn {
+                padding: 10px 16px;
+                flex: 1;
+                justify-content: center;
+                min-width: 120px;
+            }
+            
+            .counter {
+                order: -1;
+                width: 100%;
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .flashcard {
+                padding: 8px;
+            }
+            
+            .navigation {
+                padding: 10px 12px;
+            }
+            
+            .btn {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+                min-width: 100px;
+            }
+            
+            .options {
+                gap: 5px;
+            }
+            
+            .option {
+                padding: 8px 10px;
+            }
+        }
+        
+        /* Very small screens */
+        @media (max-width: 320px) {
+            .header h1 {
+                font-size: 1.1rem;
+            }
+            
+            .header .subtitle {
+                font-size: 0.75rem;
+            }
+            
+            .btn {
+                padding: 6px 10px;
+                font-size: 0.75rem;
+                min-width: 80px;
+            }
+        }
+        
+        /* Large screens optimization */
+        @media (min-width: 1400px) {
+            .container {
+                max-height: 1000px;
+            }
+            
+            .flashcard {
+                padding: 25px;
+            }
+        }
+        
+        /* Tall screens */
+        @media (min-height: 1000px) {
+            .flashcard {
+                padding: 25px;
+            }
+            
+            .question {
+                font-size: 1.2rem;
+            }
+            
+            .option {
+                font-size: 1.1rem;
+            }
+        }
+        
+        /* Short screens */
+        @media (max-height: 600px) {
+            .header {
+                padding: 10px;
+            }
+            
+            .flashcard {
+                padding: 8px;
+            }
+            
+            .question-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+            
+            .question {
+                font-size: 0.9rem;
+            }
+            
+            .image-container {
+                max-height: 100px;
+            }
+            
+            .concept-image {
+                max-height: 90px;
+            }
+            
+            .options {
+                gap: 5px;
+            }
+            
+            .option {
+                padding: 6px 8px;
+                font-size: 0.8rem;
+            }
+            
+            .option-letter {
+                width: 20px;
+                height: 20px;
+                font-size: 0.7rem;
+            }
+            
+            .navigation {
+                padding: 8px 10px;
+            }
+            
+            .btn {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Chapter 21 Flashcards</h1>
+            <div class="subtitle">Nursing Management of Labor and Birth at Risk - 30 Questions</div>
+            <div class="stats">
+                <div class="stat">🎯 30 Questions</div>
+                <div class="stat">💡 Hint Feature</div>
+                <div class="stat">📖 Visual Learning</div>
+                <div class="stat">↩️ Cancel Wrong Answers</div>
+            </div>
+        </div>
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        <div class="flashcard">
+            <div class="question-container">
+                <div class="question-icon">?</div>
+                <div class="question" id="question"></div>
+            </div>
+            <div class="image-container" id="imageContainer">
+                <img class="concept-image" id="conceptImage" alt="Educational illustration">
+            </div>
+            
+            <div class="hint-container">
+                <button class="btn btn-hint" id="hintBtn" onclick="showHint()">
+                    💡 Show Hint
+                </button>
+                <div class="hint" id="hint">
+                    <h4>💡 Study Tip:</h4>
+                    <p id="hintText"></p>
+                </div>
+            </div>
+            
+            <div class="options" id="options"></div>
+            
+            <!-- Cancel Selection Button - Only shows for wrong answers -->
+            <button class="btn cancel-selection" id="cancelBtn" onclick="cancelSelection()">
+                ↩️ Cancel Selection
+            </button>
+            
+            <div class="feedback" id="feedback">
+                <div class="feedback-icon" id="feedbackIcon"></div>
+                <div id="feedbackText"></div>
+            </div>
+            <div class="rationale" id="rationale">
+                <h4>💡 Rationale:</h4>
+                <p id="rationaleText"></p>
+            </div>
+        </div>
+        
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="previousCard()">
+                ⬅️ Previous
+            </button>
+            <div class="counter" id="counter">1/30</div>
+            <button class="btn btn-primary" id="nextBtn" onclick="nextCard()">
+                Next ➡️
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const medicalImages = {
+            'prolapsed_cord': 'https://images.unsplash.com/photo-1584467735871-8db9ac8e5e3a?w=400&h=200&fit=crop',
+            'dystocia': 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=200&fit=crop',
+            'placental_abruption': 'https://images.unsplash.com/photo-1584467735871-8db9ac8e5e3a?w=400&h=200&fit=crop',
+            'uterine_stimulants': 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=200&fit=crop',
+            'vacuum_extraction': 'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&h=200&fit=crop',
+            'oxytocin_infusion': 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=200&fit=crop',
+            'uterine_rupture': 'https://images.unsplash.com/photo-1584467735871-8db9ac8e5e3a?w=400&h=200&fit=crop',
+            'magnesium_sulfate': 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=200&fit=crop',
+            'cervical_ripening': 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=200&fit=crop',
+            'cesarean_birth': 'https://images.unsplash.com/photo-1584467735871-8db9ac8e5e3a?w=400&h=200&fit=crop',
+            'labor_stages': 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=200&fit=crop',
+            'bishop_score': 'https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=400&h=200&fit=crop',
+            'fetal_malposition': 'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&h=200&fit=crop',
+            'tocolytics': 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=200&fit=crop',
+            'preterm_labor': 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=200&fit=crop',
+            'post_term': 'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&h=200&fit=crop',
+            'cervical_ripening_methods': 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=200&fit=crop',
+            'amniotic_fluid_embolism': 'https://images.unsplash.com/photo-1584467735871-8db9ac8e5e3a?w=400&h=200&fit=crop',
+            'cesarean_indications': 'https://images.unsplash.com/photo-1584467735871-8db9ac8e5e3a?w=400&h=200&fit=crop',
+            'misoprostol': 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=200&fit=crop',
+            'preterm_prevention': 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=200&fit=crop',
+            'preterm_symptoms': 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=200&fit=crop',
+            'dinoprostone': 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=200&fit=crop',
+            'cesarean_sequence': 'https://images.unsplash.com/photo-1584467735871-8db9ac8e5e3a?w=400&h=200&fit=crop',
+            'preterm_assessment': 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=200&fit=crop',
+            'fetal_demise': 'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&h=200&fit=crop',
+            'preterm_risk_factors': 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=200&fit=crop',
+            'labor_assessment': 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=200&fit=crop'
+        };
+
+        const questions = [
+            {
+                question: "After spontaneous rupture of membranes, the nurse notices a prolapsed cord. The nurse immediately places the woman in which position?",
+                options: [
+                    "supine",
+                    "side-lying",
+                    "sitting",
+                    "knee–chest"
+                ],
+                correct: 3,
+                rationale: "Pressure on the cord needs to be relieved. Therefore, the nurse would position the woman in a modified Sims, Trendelenburg, or knee–chest position. Supine, side-lying, or sitting would not provide relief of cord compression.",
+                image: 'prolapsed_cord',
+                hint: "Think about positions that relieve pressure on the umbilical cord."
+            },
+            {
+                question: "A primigravida whose labor was initially progressing normally is now experiencing a decrease in the frequency and intensity of her contractions. The nurse would assess the woman for which condition?",
+                options: [
+                    "a low-lying placenta",
+                    "fetopelvic disproportion",
+                    "contraction ring",
+                    "uterine bleeding"
+                ],
+                correct: 1,
+                rationale: "The woman is experiencing dystocia most likely due to hypotonic uterine dysfunction and fetopelvic disproportion associated with a large fetus. A low-lying placenta, contraction ring, or uterine bleeding would not be associated with a change in labor pattern.",
+                image: 'dystocia',
+                hint: "Consider what might cause labor to slow down or stop progressing."
+            },
+            {
+                question: "Which assessment finding will alert the nurse to be on the lookout for possible placental abruption during labor?",
+                options: [
+                    "macrosomia",
+                    "gestational hypertension",
+                    "gestational diabetes",
+                    "low parity"
+                ],
+                correct: 1,
+                rationale: "Risk factors for placental abruption include preeclampsia, gestational hypertension, seizure activity, uterine rupture, trauma, smoking, cocaine use, coagulation defects, previous history of abruption, intimate partner violence, and placental pathology. Macrosomia, gestational diabetes, and low parity are not considered risk factors.",
+                image: 'placental_abruption',
+                hint: "Think about hypertensive disorders that increase risk for placental complications."
+            },
+            {
+                question: "A woman in labor is experiencing hypotonic uterine dysfunction. Assessment reveals no fetopelvic disproportion. Which group of medications would the nurse expect to administer?",
+                options: [
+                    "sedatives",
+                    "tocolytics",
+                    "uterine stimulants",
+                    "corticosteroids"
+                ],
+                correct: 2,
+                rationale: "For hypotonic labor, a uterine stimulant such as oxytocin may be prescribed once fetopelvic disproportion is ruled out. Sedatives might be helpful for the woman with hypertonic uterine contractions to promote rest and relaxation. Tocolytics would be ordered to control preterm labor. Corticosteroids may be given to enhance fetal lung maturity for women experiencing preterm labor.",
+                image: 'uterine_stimulants',
+                hint: "This medication category helps strengthen uterine contractions."
+            },
+            {
+                question: "A woman gave birth to a newborn via vaginal birth with the use of a vacuum extractor. The nurse would be alert for which possible effect in the newborn?",
+                options: [
+                    "asphyxia",
+                    "clavicular fracture",
+                    "cephalhematoma",
+                    "central nervous system injury"
+                ],
+                correct: 2,
+                rationale: "Use of forceps or a vacuum extractor poses the risk of tissue trauma, such as ecchymoses, facial and scalp lacerations, facial nerve injury, cephalhematoma, and caput succedaneum. Asphyxia may be related to numerous causes, but it is not associated with use of a vacuum extractor. Clavicular fracture is associated with shoulder dystocia. Central nervous system injury is not associated with the use of a vacuum extractor.",
+                image: 'vacuum_extraction',
+                hint: "Think about potential trauma to the newborn's head from vacuum-assisted delivery."
+            },
+            {
+                question: "A pregnant client undergoing labor induction is receiving an oxytocin infusion. Which finding would require immediate intervention?",
+                options: [
+                    "fetal heart rate of 150 beats/minute",
+                    "contractions every 2 minutes, lasting 45 seconds",
+                    "uterine resting tone of 14 mm Hg",
+                    "urine output of 20 mL/hour"
+                ],
+                correct: 3,
+                rationale: "Oxytocin can lead to water intoxication. Therefore, a urine output of 20 mL/hour is below acceptable limits of 30 mL/hour and requires intervention. FHR of 150 beats/minute is within the accepted range of 120 to 160 beats/minute. Contractions should occur every 2 to 3 minutes, lasting 40 to 60 seconds. A uterine resting tone greater than 20 mm Hg would require intervention.",
+                image: 'oxytocin_infusion',
+                hint: "Monitor for signs of water intoxication with oxytocin administration."
+            },
+            {
+                question: "A woman with a history of crack cocaine use disorder is admitted to the labor and birth area. While caring for the client, the nurse notes a sudden onset of fetal bradycardia. Inspection of the abdomen reveals an irregular wall contour. The client also reports acute abdominal pain that is continuous. Which condition would the nurse suspect?",
+                options: [
+                    "amniotic fluid embolism",
+                    "shoulder dystocia",
+                    "uterine rupture",
+                    "umbilical cord prolapse"
+                ],
+                correct: 2,
+                rationale: "Uterine rupture is associated with crack cocaine use disorder. Generally, the first and most reliable sign is sudden fetal distress accompanied by acute abdominal pain, vaginal bleeding, hematuria, irregular wall contour, and loss of station in the fetal presenting part. Amniotic fluid embolism often is manifested with a sudden onset of respiratory distress. Shoulder dystocia is noted when continued fetal descent is obstructed after the fetal head is delivered. Umbilical cord prolapse is noted as the protrusion of the cord alongside or ahead of the presenting part of the fetus.",
+                image: 'uterine_rupture',
+                hint: "Consider the signs of uterine rupture in a high-risk patient."
+            },
+            {
+                question: "A woman receives magnesium sulfate as treatment for preterm labor. The nurse assess and maintains the infusion at the prescribed rate based on which finding?",
+                options: [
+                    "Respiratory rate-16 breaths/minute",
+                    "Decreased fetal heart rate variability",
+                    "Urine output 22 mL/hour",
+                    "Absent deep tendon reflexes"
+                ],
+                correct: 0,
+                rationale: "A respiratory rate of 16 breaths per minute is appropriate and within acceptable parameters to continue the infusion. When administering magnesium sulfate, the nurse would immediately report decreaed fetal heart rate variability, a urine output less than 30 mL/hour, and decreased or absent deep tendon reflexes.",
+                image: 'magnesium_sulfate',
+                hint: "Know the therapeutic parameters for magnesium sulfate administration."
+            },
+            {
+                question: "The nurse is reviewing the physical examination findings for a client who is to undergo labor induction. Which finding would indicate to the nurse that a woman's cervix is ripe in preparation for labor induction?",
+                options: [
+                    "posterior position",
+                    "firm",
+                    "closed",
+                    "shortened"
+                ],
+                correct: 3,
+                rationale: "A ripe cervix is shortened, centered (anterior), softened, and partially dilated. An unripe cervix is long, closed, posterior, and firm.",
+                image: 'cervical_ripening',
+                hint: "Think about the characteristics of a cervix ready for labor."
+            },
+            {
+                question: "A woman with preterm labor is receiving magnesium sulfate. Which finding would require the nurse to intervene immediately?",
+                options: [
+                    "respiratory rate of 16 breaths per minute",
+                    "1+ deep tendon reflexes",
+                    "urine output of 45 mL/hour",
+                    "alert level of consciousness"
+                ],
+                correct: 1,
+                rationale: "Diminished deep tendon reflexes (1+) suggest magnesium toxicity, which requires immediate intervention. Additional signs of magnesium toxicity include a respiratory rate less than 12 breaths/minute, urine output less than 30 mL/hour, and a decreased level of consciousness.",
+                image: 'magnesium_sulfate',
+                hint: "Look for signs of magnesium toxicity."
+            },
+            {
+                question: "After teaching a couple about what to expect with their planned cesarean birth, which statement indicates the need for additional teaching?",
+                options: [
+                    "\"Holding a pillow against my incision will help me when I cough.\"",
+                    "\"I'm going to have to wait a few days before I can start breastfeeding.\"",
+                    "\"I guess the nurses will be getting me up and out of bed rather quickly.\"",
+                    "\"I'll probably have a tube in my bladder for about 24 hours or so.\""
+                ],
+                correct: 1,
+                rationale: "Typically, breastfeeding is initiated early as soon as possible after birth to promote bonding. The woman may need to use alternate positioning techniques to reduce incisional discomfort. Splinting with pillows helps to reduce the discomfort associated with coughing. Early ambulation is encouraged to prevent respiratory and cardiovascular problems and promote peristalsis. An indwelling urinary catheter is typically inserted to drain the bladder. It usually remains in place for approximately 24 hours.",
+                image: 'cesarean_birth',
+                hint: "Breastfeeding can typically begin soon after cesarean birth."
+            },
+            {
+                question: "When describing the stages of labor to a pregnant woman, which of the following would the nurse identify as the major change occurring during the first stage?",
+                options: [
+                    "Regular contractions",
+                    "Cervical dilation",
+                    "Fetal movement through the birth canal",
+                    "Placental separation"
+                ],
+                correct: 1,
+                rationale: "The primary change occurring during the first stage of labor is progressive cervical dilation. Contractions occur during the first and second stages of labor. Fetal movement through the birth canal is the major change during the second stage of labor. Placental separation occurs during the third stage of labor.",
+                image: 'labor_stages',
+                hint: "Think about what happens to the cervix during early labor."
+            },
+            {
+                question: "The nurse is providing care to several pregnant women who may be scheduled for labor induction. The nurse identifies the woman with which Bishop score as having the best chance for a successful induction and vaginal birth?",
+                options: [
+                    "11",
+                    "7",
+                    "5",
+                    "3"
+                ],
+                correct: 0,
+                rationale: "The Bishop score helps identify women who would be most likely to achieve a successful induction. The duration of labor is inversely correlated with the Bishop score: a score over 8 indicates a successful vaginal birth. Therefore the woman with a Bishop score of 11 would have the greatest chance for success. Bishop scores of less than 6 usually indicate that a cervical ripening method should be used prior to induction.",
+                image: 'bishop_score',
+                hint: "Higher Bishop scores indicate more favorable conditions for induction."
+            },
+            {
+                question: "A nurse is reviewing the medical record of a pregnant client. The nurse suspects that the client may be at risk for dystocia based on which factors? Select all that apply.",
+                options: [
+                    "plan for pudendal block anesthetic use",
+                    "multiparity",
+                    "short maternal stature",
+                    "Body mass index 30.2",
+                    "breech fetal presentation"
+                ],
+                correct: 2,
+                rationale: "Risk factors for dystocia may include maternal short stature, obesity, hydramnios, uterine abnormalities, fetal malpresentation, cephalopelvic disproportion, overstimulation with oxytocin, maternal exhaustion, ineffective pushing, excessive size fetus, poor maternal positioning in labor, and maternal anxiety and fear",
+                image: 'dystocia',
+                hint: "Consider maternal and fetal factors that can complicate labor progress."
+            },
+            {
+                question: "A nurse is preparing an inservice education program for a group of nurses about dystocia involving problems with the passenger. Which problem would the nurse likely include as the most common?",
+                options: [
+                    "macrosomia",
+                    "breech presentation",
+                    "persistent occiput posterior position",
+                    "multifetal pregnancy"
+                ],
+                correct: 2,
+                rationale: "Common problems involving the passenger include occiput posterior position, breech presentation, multifetal pregnancy, excessive size (macrosomia) as it relates to cephalopelvic disproportion (CPD), and structural anomalies. Of these, persistent occiput posterior is the most common malposition, occurring in about 15% of laboring women.",
+                image: 'fetal_malposition',
+                hint: "This is the most frequent fetal malposition during labor."
+            },
+            {
+                question: "A nurse is conducting a review course on tocolytic therapy for perinatal nurses. After teaching the group, the nurse determines that the teaching was successful when they identify which drugs as being used for tocolysis? Select all that apply.",
+                options: [
+                    "nifedipine",
+                    "magnesium sulfate",
+                    "dinoprostone",
+                    "misoprostol",
+                    "indomethacin"
+                ],
+                correct: 0,
+                rationale: "Medications most commonly used for tocolysis include magnesium sulfate (which reduces the muscle's ability to contract), indomethacin (a prostaglandin synthetase inhibitor), and nifedipine (a calcium channel blocker). These drugs are used \"off label\": this means they are effective for this purpose but have not been officially tested and developed for this purpose by the FDA. Dinoprostone and misoprostol are used to ripen the cervix.",
+                image: 'tocolytics',
+                hint: "These medications help stop or slow preterm labor."
+            },
+            {
+                question: "A nurse is teaching a pregnant woman at risk for preterm labor about what to do if she experiences signs and symptoms. The nurse determines that the teaching was successful when the woman makes which statement?",
+                options: [
+                    "\"I'll sit down to rest for 30 minutes.\"",
+                    "\"I'll try to move my bowels.\"",
+                    "\"I'll lie down with my legs raised.\"",
+                    "\"I'll drink several glasses of water.\""
+                ],
+                correct: 3,
+                rationale: "If the woman experiences any signs and symptoms of preterm labor, she should stop what she is doing and rest for 1 hour, empty her bladder, lie down on her side, drink two to three glasses of water, feel her abdomen and note the hardness of the contraction, and call her health care provider and describe the contraction.",
+                image: 'preterm_labor',
+                hint: "Hydration can sometimes help reduce preterm contractions."
+            },
+            {
+                question: "A nurse is describing the risks associated with post-term pregnancies as part of an inservice presentation. The nurse determines that more teaching is needed when the group identifies which factor as an underlying reason for problems in the fetus?",
+                options: [
+                    "aging of the placenta",
+                    "increased amniotic fluid volume",
+                    "meconium aspiration",
+                    "cord compression"
+                ],
+                correct: 1,
+                rationale: "Fetal risks associated with a post-term pregnancy include macrosomia, shoulder dystocia, brachial plexus injuries, low Apgar scores, postmaturity syndrome (loss of subcutaneous fat and muscle and meconium staining), and cephalopelvic disproportion. As the placenta ages, its perfusion decreases and it becomes less efficient at delivering oxygen and nutrients to the fetus. Amniotic fluid volume also begins to decline after 38 weeks' gestation, possibly leading to oligohydramnios, subsequently resulting in fetal hypoxia and an increased risk of cord compression because the cushioning effect offered by adequate fluid is no longer present. Hypoxia and oligohydramnios predispose the fetus to aspiration of meconium, which is released by the fetus in response to a hypoxic insult (Norwitz, 2019). All of these issues can compromise fetal well-being and lead to fetal distress.",
+                image: 'post_term',
+                hint: "Amniotic fluid typically decreases, not increases, in post-term pregnancies."
+            },
+            {
+                question: "A nurse is explaining to a group of nurses new to the labor and birth unit about methods used for cervical ripening. The group demonstrates understanding of the information when they identify which method as a mechanical one?",
+                options: [
+                    "herbal agents",
+                    "laminaria",
+                    "membrane stripping",
+                    "amniotomy"
+                ],
+                correct: 1,
+                rationale: "Laminaria is a hygroscopic dilator that is used as a mechanical method for cervical ripening. Herbal agents are a nonpharmacologic method. Membrane stripping and amniotomy are considered surgical methods.",
+                image: 'cervical_ripening_methods',
+                hint: "This method uses physical devices to dilate the cervix."
+            },
+            {
+                question: "The nurse notifies the obstetrical team immediately because the nurse suspects that the pregnant woman may be exhibiting signs and symptoms of amniotic fluid embolism. When reporting this suspicion, which finding(s) would the nurse include in the report? Select all that apply.",
+                options: [
+                    "significant difficulty breathing",
+                    "hypertension",
+                    "tachycardia",
+                    "pulmonary edema",
+                    "bleeding with bruising"
+                ],
+                correct: 0,
+                rationale: "Anaphylactoid syndrome of pregnancy (ASP), also known as amniotic fluid embolism, is an unforeseeable, life-threatening complication of childbirth. The etiology of ASP remains an enigmatic, devastating obstetric condition associated with significant maternal and newborn morbidity and mortality. It is a rare and often fatal event characterized by the sudden onset of hypotension, cardiopulmonary collapse, hypoxia, and coagulopathy. ASP should be suspected in any pregnant women with an acute onset of dyspnea, hypotension, and DIC. By knowing how to intervene, the nurse can promote a better chance of survival for both the mother and her newborn.",
+                image: 'amniotic_fluid_embolism',
+                hint: "Look for respiratory distress and coagulation problems."
+            },
+            {
+                question: "A nurse is conducting an in-service program for a group of labor and birth unit nurses about cesarean birth. The group demonstrates understanding of the information when they identify which conditions as appropriate indications? Select all that apply.",
+                options: [
+                    "active genital herpes infection",
+                    "placenta previa",
+                    "previous cesarean birth",
+                    "prolonged labor",
+                    "fetal distress"
+                ],
+                correct: 0,
+                rationale: "The leading indications for cesarean birth are previous cesarean birth, breech presentation, dystocia, and fetal distress. Examples of specific indications include active genital herpes, fetal macrosomia, fetopelvic disproportion, prolapsed umbilical cord, placental abnormality (placenta previa or placental abruption), previous classic uterine incision or scar, gestational hypertension, diabetes, positive human immunodeficiency virus (HIV) status, and dystocia. Fetal indications include malpresentation (nonvertex presentation), congenital anomalies (fetal neural tube defects, hydrocephalus, abdominal wall defects), and fetal distress.",
+                image: 'cesarean_indications',
+                hint: "Consider both maternal and fetal conditions that make vaginal delivery risky."
+            },
+            {
+                question: "A pregnant woman is receiving misoprostol to ripen her cervix and induce labor. The nurse assesses the woman closely for which effect?",
+                options: [
+                    "uterine hyperstimulation",
+                    "headache",
+                    "blurred vision",
+                    "hypotension"
+                ],
+                correct: 0,
+                rationale: "A major adverse effect of the obstetric use of misoprostol is hyperstimulation of the uterus, which may progress to uterine tetany with marked impairment of uteroplacental blood flow, uterine rupture (requiring surgical repair, hysterectomy, and/or salpingo-oophorectomy), or amniotic fluid embolism. Headache, blurred vision, and hypotension are associated with magnesium sulfate.",
+                image: 'misoprostol',
+                hint: "This medication can cause excessive uterine activity."
+            },
+            {
+                question: "A nurse is teaching a woman about measures to prevent preterm labor in future pregnancies because the woman just experienced preterm labor with her most recent pregnancy. The nurse determines that the teaching was successful based on which statement by the woman?",
+                options: [
+                    "\"I'll make sure to limit the amount of long distance traveling I do.\"",
+                    "\"Stress isn't a problem that is related to preterm labor.\"",
+                    "\"Separating pregnancies by about a year should be helpful.\"",
+                    "\"I'll need extra iron in my diet so I have extra for the baby.\""
+                ],
+                correct: 0,
+                rationale: "Appropriate measures to reduce the risk for preterm labor include: avoiding travel for long distances in cars, trains, planes or buses; achieving adequate iron store through balanced nutrition (excess iron is not necessary); waiting for at least 18 months between pregnancies, and using stress management techniques for stress.",
+                image: 'preterm_prevention',
+                hint: "Long-distance travel can be a risk factor for preterm labor."
+            },
+            {
+                question: "A pregnant woman at 31-weeks' gestation calls the clinic and tells the nurse that she is having contractions sporadically. Which instructions would be most appropriate for the nurse to give the woman? Select all that apply.",
+                options: [
+                    "\"Walk around the house for the next half hour.\"",
+                    "\"Drink two or three glasses of water.\"",
+                    "\"Lie down on your back.\"",
+                    "\"Try emptying your bladder.\"",
+                    "\"Stop what you are doing and rest.\""
+                ],
+                correct: 1,
+                rationale: "Appropriate instructions for the woman who may be experiencing preterm labor include having the client stop what she is doing and rest for an hour, empty her bladder, lie down on her left side, and drink two to three glasses of water.",
+                image: 'preterm_symptoms',
+                hint: "These measures can help reduce preterm contractions."
+            },
+            {
+                question: "A pregnant client has received dinoprostone. Following administration of this medication, the nurse assesses the client and determines that the client is experiencing an adverse effect of the medication based on which client report? Select all that apply.",
+                options: [
+                    "headache",
+                    "nausea",
+                    "diarrhea",
+                    "tachycardia",
+                    "hypotension"
+                ],
+                correct: 0,
+                rationale: "Adverse effects associated with dinoprostone include headache, nauseas and vomiting, and diarrhea. Tachycardia and hypotension are not associated with this drug.",
+                image: 'dinoprostone',
+                hint: "Think about prostaglandin side effects."
+            },
+            {
+                question: "A nurse is reading a journal article about cesarean births and the indications for them. Place the indications for cesarean birth below in the proper sequence from most frequent to least frequent. All options must be used.",
+                options: [
+                    "Labor dystocia",
+                    "Abnormal fetal heart rate tracing",
+                    "Fetal malpresentation",
+                    "Multiple gestation",
+                    "Suspected macrosomia"
+                ],
+                correct: 0,
+                rationale: "The most common indications for primary cesarean births include, in order of frequency: labor dystocia as the labor does not progress, abnormal fetal heart rate tracing indicating fetal distress, fetal malpresentation making a difficult progression of labor, multiple gestation , and suspected macrosomia.",
+                image: 'cesarean_sequence',
+                hint: "Labor not progressing is the most common reason for primary cesarean."
+            },
+            {
+                question: "A nurse is taking a history on a woman who is at 20 weeks' gestation. The woman reports that she feels some heaviness in her thighs since yesterday. The nurse suspects that the woman may be experiencing preterm labor based on which additional assessment findings? Select all that apply.",
+                options: [
+                    "dull low backache",
+                    "viscous vaginal discharge",
+                    "dysuria",
+                    "constipation",
+                    "occasional cramping"
+                ],
+                correct: 0,
+                rationale: "Symptoms of preterm labor are often subtle and may include change or increase in vaginal discharge with mucus, water, or blood in it; pelvic pressure; low, dull backache; nausea, vomiting or diarrhea, and heaviness or aching in the thighs. Constipation is not known to be a sign of preterm labor. Preterm labor is assessed when there are more than six contractions per hour. Occasional asymptomatic cramping can be normal.",
+                image: 'preterm_assessment',
+                hint: "Look for subtle signs of preterm labor beyond just contractions."
+            },
+            {
+                question: "A pregnant client at 24 weeks' gestation comes to the clinic for an evaluation. The client called the clinic earlier in the day stating that she had not felt the fetus moving since yesterday evening. Further assessment reveals absent fetal heart tones. Intrauterine fetal demise is suspected. The nurse would expect to prepare the client for which testing to confirm the suspicion?",
+                options: [
+                    "Ultrasound",
+                    "Amniocentesis",
+                    "Human chorionic gonadotropin (hCG) level",
+                    "Triple marker screening"
+                ],
+                correct: 0,
+                rationale: "A client experiencing an intrauterine fetal demise (IUFD) is likely to seek care when she notices that the fetus is not moving or when she experiences contractions, loss of fluid, or vaginal bleeding. History and physical examination frequently are of limited value in the diagnosis of fetal death, since many times the only history tends to be recent absence of fetal movement and no fetal heart beat heard. An inability to obtain fetal heart sounds on examination suggests fetal demise, but an ultrasound is necessary to confirm the absence of fetal cardiac activity. Once fetal demise is confirmed, induction of labor or expectant management is offered to the client. An amniocentesis, hCG level, or triple marker screening would not be used to confirm IUFD.",
+                image: 'fetal_demise',
+                hint: "This imaging test confirms absence of fetal cardiac activity."
+            },
+            {
+                question: "A 32-year-old black woman in her second trimester has come to the clinic for an evaluation. While interviewing the client, she reports a history of fibroids and urinary tract infection. The client states, \"I know smoking is bad and I have tried to stop, but it is impossible. I have cut down quite a bit though, and I do not drink alcohol.\" Complete blood count results reveal a low red blood cell count, low hemoglobin, and low hematocrit. When planning this client's care, which factor(s) would the nurse identify as increasing the client's risk for preterm labor? Select all that apply.",
+                options: [
+                    "African heritage",
+                    "Maternal age",
+                    "History of fibroids",
+                    "Cigarette smoking",
+                    "History of urinary tract infections",
+                    "Complete blood count results"
+                ],
+                correct: 0,
+                rationale: "For this client, risk factors associated with preterm labor and birth would include African heritage, cigarette smoking, uterine abnormalities, such as fibroids, urinary tract infection, and possible anemia based on her complete blood count results. Maternal age extremes (younger than 16 years and older than 35 years) are also a risk factor but do not apply to this client.",
+                image: 'preterm_risk_factors',
+                hint: "Consider multiple risk factors including race, uterine issues, infections, and anemia."
+            },
+            {
+                question: "A pregnant client at 30 weeks' gestation calls the clinic because she thinks that she may be in labor. To determine if the client is experiencing labor, which question(s) would be appropriate for the nurse to ask? Select all that apply.",
+                options: [
+                    "\"Are you feeling any pressure or heaviness in your pelvis?\"",
+                    "\"Are you having contractions that come and go, off and on?\"",
+                    "\"Have you noticed any fluid leaking from your vagina?\"",
+                    "\"Are you having problems with heartburn?\"",
+                    "\"Have you been having any nausea or vomiting?\""
+                ],
+                correct: 0,
+                rationale: "Frequently, women are unaware that uterine contractions, effacement, and dilation are occurring, thus making early intervention ineffective in arresting preterm labor and preventing the birth of a premature newborn. The nurse should ask the client about any signs/symptoms, being alert for subtle symptoms of preterm labor, which may include: a change or increase in vaginal discharge with mucous, water, or blood in it; pelvic pressure (pushing-down sensation); low dull backache; menstrual-like cramps; urinary tract infection symptoms; feeling of pelvic pressure or fullness; gastrointestinal upset like nausea, vomiting, and diarrhea; general sense of discomfort or unease; heaviness or aching in the thighs; uterine contractions with or without pain; more than six contractions per hour; intestinal cramping with or without diarrhea. Contractions also must be persistent, such that four contractions occur every 20 minutes or eight contractions occur in 1 hour. A report of heartburn is unrelated to preterm labor.",
+                image: 'labor_assessment',
+                hint: "Look for signs beyond just contractions that might indicate preterm labor."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let selectedOption = null;
+        let score = 0;
+        let answers = Array(questions.length).fill(null);
+
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('question').textContent = question.question;
+            document.getElementById('counter').textContent = `${currentQuestion + 1}/${questions.length}`;
+            
+            // Update progress bar
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            
+            // Load image
+            const imageContainer = document.getElementById('imageContainer');
+            const conceptImage = document.getElementById('conceptImage');
+            if (question.image && medicalImages[question.image]) {
+                conceptImage.src = medicalImages[question.image];
+                imageContainer.style.display = 'flex';
+            } else {
+                imageContainer.style.display = 'none';
+            }
+            
+            // Load options
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.innerHTML = `
+                    <div class="option-letter">${String.fromCharCode(65 + index)}</div>
+                    <div class="option-text">${option}</div>
+                `;
+                optionElement.onclick = () => selectOption(index);
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // Reset feedback and rationale
+            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('rationale').className = 'rationale';
+            document.getElementById('hint').className = 'hint';
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            document.getElementById('nextBtn').textContent = currentQuestion === questions.length - 1 ? 'Finish ➡️' : 'Next ➡️';
+            document.getElementById('nextBtn').disabled = answers[currentQuestion] === null;
+            
+            // Reset cancel button visibility
+            document.getElementById('cancelBtn').classList.remove('show');
+            
+            // If this question was already answered, show the answer
+            if (answers[currentQuestion] !== null) {
+                selectOption(answers[currentQuestion], true);
+            }
+        }
+
+        function selectOption(index, fromMemory = false) {
+            // If we're just loading a previously selected answer, don't process it as new
+            if (fromMemory) {
+                highlightSelectedOption(index);
+                showFeedback(index);
+                return;
+            }
+            
+            // If an option is already selected, do nothing (unless we're loading from memory)
+            if (selectedOption !== null && !fromMemory) return;
+            
+            selectedOption = index;
+            answers[currentQuestion] = index;
+            
+            highlightSelectedOption(index);
+            showFeedback(index);
+            
+            // Enable next button
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function cancelSelection() {
+            // Reset the selected option
+            selectedOption = null;
+            answers[currentQuestion] = null;
+            
+            // Remove highlighting from all options
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.classList.remove('correct', 'incorrect', 'selected');
+            });
+            
+            // Hide feedback and rationale
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('rationale').classList.remove('show');
+            
+            // Hide the cancel button
+            document.getElementById('cancelBtn').classList.remove('show');
+            
+            // Disable next button until a new selection is made
+            document.getElementById('nextBtn').disabled = true;
+        }
+
+        function highlightSelectedOption(index) {
+            const options = document.querySelectorAll('.option');
+            const question = questions[currentQuestion];
+            
+            options.forEach((option, i) => {
+                option.classList.remove('correct', 'incorrect', 'selected');
+                
+                if (i === index) {
+                    option.classList.add('selected');
+                    
+                    if (i === question.correct) {
+                        option.classList.add('correct');
+                        if (!answers[currentQuestion]) score++;
+                        
+                        // Don't show cancel button for correct answers
+                        document.getElementById('cancelBtn').classList.remove('show');
+                    } else {
+                        option.classList.add('incorrect');
+                        // Also highlight the correct answer
+                        options[question.correct].classList.add('correct');
+                        
+                        // Show cancel button only for wrong answers
+                        document.getElementById('cancelBtn').classList.add('show');
+                    }
+                }
+            });
+        }
+
+        function showFeedback(index) {
+            const question = questions[currentQuestion];
+            const feedback = document.getElementById('feedback');
+            const feedbackIcon = document.getElementById('feedbackIcon');
+            const feedbackText = document.getElementById('feedbackText');
+            const rationale = document.getElementById('rationale');
+            const rationaleText = document.getElementById('rationaleText');
+            
+            if (index === question.correct) {
+                feedback.className = 'feedback correct';
+                feedbackIcon.textContent = '✅';
+                feedbackText.textContent = 'Correct! Well done.';
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedbackIcon.textContent = '❌';
+                feedbackText.textContent = `Incorrect. The right answer is: ${String.fromCharCode(65 + question.correct)}`;
+            }
+            
+            feedback.style.display = 'flex';
+            rationaleText.textContent = question.rationale;
+            rationale.classList.add('show');
+        }
+
+        function showHint() {
+            const hint = document.getElementById('hint');
+            const hintText = document.getElementById('hintText');
+            const question = questions[currentQuestion];
+            
+            hintText.textContent = question.hint;
+            hint.classList.add('show');
+        }
+
+        function nextCard() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                selectedOption = null;
+                loadQuestion();
+            } else {
+                // Quiz finished - show results
+                alert(`Quiz completed! Your score: ${score}/${questions.length}`);
+                currentQuestion = 0;
+                selectedOption = null;
+                score = 0;
+                answers = Array(questions.length).fill(null);
+                loadQuestion();
+            }
+        }
+
+        function previousCard() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                selectedOption = answers[currentQuestion];
+                loadQuestion();
+            }
+        }
+
+        // Initialize the app
+        loadQuestion();
+    </script>
+</body>
+</html>
